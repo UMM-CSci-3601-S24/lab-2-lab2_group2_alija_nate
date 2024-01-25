@@ -123,7 +123,7 @@ public class TodoDatabase {
       } else if (targetStatus.equals("incomplete")) {
       return Arrays.stream(todos).filter(x -> !x.status).toArray(Todo[]::new);
       } else {
-      return todos;
+      throw new IllegalArgumentException("Invalid targetStatus: " + targetStatus);
     }
   }
   public Todo[] filterTodosByBody(Todo[] todos, String targetBody) {
