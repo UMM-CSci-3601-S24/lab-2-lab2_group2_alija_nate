@@ -98,14 +98,18 @@ public class TodoDatabase {
     // Sorting Array
     if (queryParams.containsKey("orderBy")) {
       String targetOrder = queryParams.get("orderBy").get(0);
-      if(targetOrder.equals("body"))
+      if (targetOrder.equals("body")) {
         Arrays.sort(filteredTodos, Comparator.comparing(x -> x.body));
-      if(targetOrder.equals("owner"))
+      }
+      if (targetOrder.equals("owner")) {
         Arrays.sort(filteredTodos, Comparator.comparing(x -> x.owner));
-      if(targetOrder.equals("status"))
+      }
+      if (targetOrder.equals("status")) {
         Arrays.sort(filteredTodos, Comparator.comparing(x -> x.status));
-      if(targetOrder.equals("category"))
+      }
+      if (targetOrder.equals("category")) {
         Arrays.sort(filteredTodos, Comparator.comparing(x -> x.category));
+      }
     }
 
 
@@ -114,12 +118,13 @@ public class TodoDatabase {
   }
 
   public Todo[] filterTodosByStatus(Todo[] todos, String targetStatus) {
-    if(targetStatus.equals("complete"))
-      return Arrays.stream(todos).filter(x -> x.status == true).toArray(Todo[]::new);
-    else if(targetStatus.equals("incomplete"))
-      return Arrays.stream(todos).filter(x -> x.status == false).toArray(Todo[]::new);
-    else
+    if (targetStatus.equals("complete")) {
+      return Arrays.stream(todos).filter(x -> x.status).toArray(Todo[]::new);
+      } else if (targetStatus.equals("incomplete")) {
+      return Arrays.stream(todos).filter(x -> !x.status).toArray(Todo[]::new);
+      } else {
       return todos;
+    }
   }
   public Todo[] filterTodosByBody(Todo[] todos, String targetBody) {
     return Arrays.stream(todos).filter(x -> x.body.contains(targetBody)).toArray(Todo[]::new);

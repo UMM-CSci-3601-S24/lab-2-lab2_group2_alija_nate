@@ -269,8 +269,8 @@ public class TodoControllerSpec {
 
     // Confirm that all the todos passed to `json` work for OHMNET.
     verify(ctx).json(todoArrayCaptor.capture());
-    for (int x = 0; x < todoArrayCaptor.getValue().length-1; x++) {
-      assertEquals(true, todoArrayCaptor.getValue()[x].owner.compareTo(todoArrayCaptor.getValue()[x+1].owner) <= 0);
+    for (int x = 0; x < todoArrayCaptor.getValue().length - 1; x++) {
+      assertEquals(true, todoArrayCaptor.getValue()[x].owner.compareTo(todoArrayCaptor.getValue()[x + 1].owner) <= 0);
     }
   }
   @Test
