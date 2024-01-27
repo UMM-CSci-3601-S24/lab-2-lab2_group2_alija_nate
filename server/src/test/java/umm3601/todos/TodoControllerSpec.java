@@ -190,6 +190,71 @@ public class TodoControllerSpec {
     // Confirm that there are 143 todos with status true
     assertEquals(157, todoArrayCaptor.getValue().length);
   }
+/*
+  @Test
+  public void canGetTodosWithUndefinedStatus() throws IOException {
+    // Add a query param map to the context that maps "age"
+    // to "25".
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put("status", Arrays.asList(new String[] {"undefined"}));
+    // Tell the mock `ctx` object to return our query
+    // param map when `queryParamMap()` is called.
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+
+    // Call the method on the mock controller with the added
+    // query param map to limit the result to just todos with
+    // age 25.
+    todoController.getTodos(ctx);
+
+    // Confirm that all the todos passed to `json` have age 25.
+    verify(ctx).json(todoArrayCaptor.capture());
+    for (Todo todo : todoArrayCaptor.getValue()) {
+      assertEquals(false, todo.status);
+    }
+    // Confirm that there are 143 todos with status true
+    assertEquals(0, todoArrayCaptor.getValue().length);
+  }
+
+*/
+
+  @Test
+  public void canGetTodosWithUndefinedStatuss() {
+    // We'll set the requested "age" to be a string ("abc")
+    // that can't be parsed to a number.
+    Map<String, List<String>> queryParams = new HashMap<>();
+    String undefinedStatus = "undefined";
+    queryParams.put("status", Arrays.asList(new String[] {undefinedStatus}));
+    // Tell the mock `ctx` object to return our query
+    // param map when `queryParamMap()` is called.
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+
+    // This should now throw a `BadRequestResponse` exception because
+    // our request has an age that can't be parsed to a number.
+    Throwable exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      todoController.getTodos(ctx);
+    });
+    assertEquals("Invalid targetStatus: " + undefinedStatus, exception.getMessage());
+  }
+
+/*
+  @Test
+  public void respondsAppropriatelyToIllegalLimitInput() {
+    // We'll set the requested "age" to be a string ("abc")
+    // that can't be parsed to a number.
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put("limit", Arrays.asList(new String[] {"abc"}));
+    // Tell the mock `ctx` object to return our query
+    // param map when `queryParamMap()` is called.
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+
+    // This should now throw a `BadRequestResponse` exception because
+    // our request has an age that can't be parsed to a number.
+    Throwable exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      todoController.getTodos(ctx);
+    });
+    assertEquals("Specified limit '" + "abc" + "' can't be parsed to an integer", exception.getMessage());
+  }
+*/
 
   /**
    * Confirm that we can get all the todos with company OHMNET.
@@ -259,6 +324,7 @@ public class TodoControllerSpec {
     assertEquals(79, todoArrayCaptor.getValue().length);
   }
 
+
   @Test
   public void canGetTodosSorted() throws IOException {
     Map<String, List<String>> queryParams = new HashMap<>();
@@ -273,6 +339,63 @@ public class TodoControllerSpec {
       assertEquals(true, todoArrayCaptor.getValue()[x].owner.compareTo(todoArrayCaptor.getValue()[x + 1].owner) <= 0);
     }
   }
+
+  @Test
+  public void canGetTodosSortedBodyTest() throws IOException {
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put("orderBy", Arrays.asList(new String[] {"body"}));
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+
+    todoController.getTodos(ctx);
+
+    // Confirm that all the todos passed to `json` work for OHMNET.
+    verify(ctx).json(todoArrayCaptor.capture());
+    for (int x = 0; x < todoArrayCaptor.getValue().length - 1; x++) {
+      assertEquals(true, todoArrayCaptor.getValue()[x].body.compareTo(todoArrayCaptor.getValue()[x + 1].body) <= 0);
+    }
+  }
+
+  @Test
+  public void canGetTodosSortedCategoryTest() throws IOException {
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put("orderBy", Arrays.asList(new String[] {"category"}));
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+
+    todoController.getTodos(ctx);
+
+    // Confirm that all the todos passed to `json` work for OHMNET.
+    verify(ctx).json(todoArrayCaptor.capture());
+    for (int x = 0; x < todoArrayCaptor.getValue().length - 1; x++) {
+      assertEquals(
+        true, todoArrayCaptor.getValue()[x].category.compareTo(todoArrayCaptor.getValue()[x + 1].category) <= 0);
+    }
+  }
+
+  @Test
+  public void canGetTodosSortedStatusTest() throws IOException {
+    Map<String, List<String>> queryParams = new HashMap<>();
+    queryParams.put("orderBy", Arrays.asList(new String[] {"status"}));
+    when(ctx.queryParamMap()).thenReturn(queryParams);
+
+    todoController.getTodos(ctx);
+
+    // Confirm that all the todos passed to `json` work for OHMNET.
+    verify(ctx).json(todoArrayCaptor.capture());
+    Todo[] todos = todoArrayCaptor.getValue();
+
+    // Confirm that all the todos passed to `json` work for OHMNET.
+    verify(ctx).json(todoArrayCaptor.capture());
+    for (int x = 0; x < todoArrayCaptor.getValue().length - 1; x++) {
+      assertEquals(
+        true,
+        new Boolean(todoArrayCaptor.getValue()[x].status)
+          .compareTo(new Boolean(todoArrayCaptor.getValue()[x + 1].status)) <= 0);
+    }
+  }
+
+
+
+
   @Test
   public void canGetTodosWithLimit() throws IOException {
     Map<String, List<String>> queryParams = new HashMap<>();
